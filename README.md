@@ -1,7 +1,8 @@
 # 海克斯增幅计算器 - Hextech Augment Calculator
 
 分析英雄联盟海克斯增幅（Hextech Augments）对每个英雄技能的增益效果。
-
+## 镜像源
+### 默认使用了腾讯云，自行修改Dockerfile的apt源即可
 ## 快速启动
 
 ### Docker（推荐）

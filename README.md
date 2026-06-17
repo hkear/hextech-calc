@@ -5,7 +5,7 @@
 默认使用了腾讯云，自行修改Dockerfile的apt源即可
 
 ## 演示
-https://hsk.boyicul.com 
+https://hks.boyicul.com 
 https://hextech.boyicul.com 
 
 

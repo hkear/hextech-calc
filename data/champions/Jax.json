@@ -1,0 +1,149 @@
+{
+  "_version": "16.12.1",
+  "_updated": "2026-06-16 22:20:55",
+  "id": "Jax",
+  "name": "武器大师",
+  "title": "贾克斯",
+  "tags": [
+    "Fighter"
+  ],
+  "stats": {
+    "hp": 650,
+    "hpperlevel": 103,
+    "mp": 339,
+    "mpperlevel": 52,
+    "movespeed": 350,
+    "armor": 36,
+    "armorperlevel": 4.2,
+    "spellblock": 32,
+    "spellblockperlevel": 2.05,
+    "attackrange": 125,
+    "hpregen": 8.5,
+    "hpregenperlevel": 0.55,
+    "mpregen": 8.2,
+    "mpregenperlevel": 0.7,
+    "crit": 0,
+    "critperlevel": 0,
+    "attackdamage": 68,
+    "attackdamageperlevel": 0,
+    "attackspeedperlevel": 3.4,
+    "attackspeed": 0.638
+  },
+  "skills": {
+    "passive": {
+      "name": "无情连打",
+      "description": "贾克斯连续的普通攻击，会持续地提高他的攻击速度。",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/passive/Armsmaster_MasterOfArms.png"
+    },
+    "q": {
+      "name": "跳斩",
+      "key": "Q",
+      "description": "贾克斯跳向一个单位。如果目标是敌人，贾克斯会用他的武器狠狠地抽打敌人的脸，造成额外伤害。",
+      "tooltip": "贾克斯跳向一个友方或敌方单位或守卫，如果目标是敌人则会造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JaxQ.png",
+      "cooldown": [
+        8,
+        7.5,
+        7,
+        6.5,
+        6
+      ],
+      "cost": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "range": [
+        700,
+        700,
+        700,
+        700,
+        700
+      ],
+      "maxrank": 5
+    },
+    "w": {
+      "name": "蓄力一击",
+      "key": "W",
+      "description": "贾克斯为武器充能，使他的下次攻击能造成额外伤害。",
+      "tooltip": "贾克斯给他的武器充能，使他的下次攻击或<spellName>跳斩</spellName>造成额外的<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JaxW.png",
+      "cooldown": [
+        7,
+        6,
+        5,
+        4,
+        3
+      ],
+      "cost": [
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
+      "range": [
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "maxrank": 5
+    },
+    "e": {
+      "name": "反击风暴",
+      "key": "E",
+      "description": "贾克斯的武艺让他能够在短时间里躲闪掉所有即将到来的普通攻击，随后对所有周围的敌人快速发起反击，并将他们击晕。",
+      "tooltip": "贾克斯进入一个最多持续{{ dodgeduration }}秒的防御姿态，能够躲闪掉一切即将到来的攻击，并且减少{{ aoedamagereduction }}%来自群体技能的伤害。在{{ dodgeduration }}秒后，或<recast>再次施放</recast>后，贾克斯会造成<magicDamage>{{ totaldamage }} + {{ percenthealthdamage }}%最大生命值的魔法伤害</magicDamage>并使附近的敌人<status>晕眩</status>{{ stunduration }}秒。<br /><br />贾克斯每躲掉一次攻击，这个伤害值就会提升{{ percentincreasedperdodge*100 }}%，最多可提升至最大值<magicDamage>{{ maxdamage }} + {{ maxpercenthealthdamage }}%最大生命值</magicDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JaxE.png",
+      "cooldown": [
+        17,
+        15,
+        13,
+        11,
+        9
+      ],
+      "cost": [
+        50,
+        60,
+        70,
+        80,
+        90
+      ],
+      "range": [
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "maxrank": 5
+    },
+    "r": {
+      "name": "武器大师",
+      "key": "R",
+      "description": "每连续攻击2次，第3次攻击就会造成额外的魔法伤害。另外，贾克斯可以激活这个技能来在他周围造成伤害并增强他的决心，从而暂时性地提升他的护甲和魔法抗性。",
+      "tooltip": "<spellPassive>被动：</spellPassive>{{ passivefallofftime }}秒内的每第三次攻击造成额外的<magicDamage>{{ onhitdamage }}魔法伤害</magicDamage>。<br /><br /><spellActive>主动：</spellActive>贾克斯将他的灯柱砸落，对附近的敌人们造成<magicDamage>{{ swingdamagetotal }}魔法伤害</magicDamage>。如果他命中了一名英雄，那么他会获得<scaleArmor>{{ basearmor }}护甲</scaleArmor>和<scaleMR>{{ basemr }}魔法抗性</scaleMR>，并且每额外命中一个英雄就会获得额外的<scaleArmor>{{ bonusarmor }}护甲</scaleArmor>和<scaleMR>{{ bonusmr }}魔法抗性</scaleMR>，持续{{ duration }}秒。在此期间，他每第二次攻击（而非每第三次攻击）造成额外的<magicDamage>魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JaxR.png",
+      "cooldown": [
+        110,
+        100,
+        90
+      ],
+      "cost": [
+        100,
+        100,
+        100
+      ],
+      "range": [
+        260,
+        260,
+        260
+      ],
+      "maxrank": 3
+    }
+  }
+}

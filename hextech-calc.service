@@ -1,0 +1,16 @@
+[Unit]
+Description=海克斯增幅计算器 - Hextech Augment Calculator
+After=network.target
+
+[Service]
+Type=simple
+User=www
+Group=www
+WorkingDirectory=/www/wwwroot/hextech-calc
+ExecStart=/usr/bin/python3 /www/wwwroot/hextech-calc/app.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

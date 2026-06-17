@@ -1,0 +1,158 @@
+{
+  "_meta": {
+    "description": "海克斯增幅计算引擎规则",
+    "version": "1.0.0",
+    "last_updated": "2026-06-16"
+  },
+
+  "skill_classification": {
+    "damage_ad": {
+      "description": "物理伤害技能",
+      "weight": 1.0,
+      "match_effects": ["flat_stat.ad", "flat_stat.attack_damage", "flat_stat.lethality", "damage_amp.*", "damage_conversion.*", "attack_modifier.*"]
+    },
+    "damage_ap": {
+      "description": "魔法伤害技能",
+      "weight": 1.0,
+      "match_effects": ["flat_stat.ap", "flat_stat.magic_pen", "damage_amp.*", "damage_conversion.*", "attack_modifier.*"]
+    },
+    "damage_true": {
+      "description": "真实伤害技能",
+      "weight": 1.2,
+      "match_effects": ["damage_amp.*", "flat_stat.ability_haste"]
+    },
+    "auto_attack": {
+      "description": "普攻相关",
+      "weight": 1.0,
+      "match_effects": ["flat_stat.attack_speed", "flat_stat.crit_chance", "flat_stat.crit_damage", "flat_stat.attack_range", "attack_modifier.*", "damage_amp.attack_damage"]
+    },
+    "heal_shield": {
+      "description": "治疗/护盾技能",
+      "weight": 1.0,
+      "match_effects": ["heal_shield_boost.*", "flat_stat.ability_haste", "flat_stat.ap"]
+    },
+    "cc": {
+      "description": "控制技能(眩晕/减速/禁锢等)",
+      "weight": 0.8,
+      "match_effects": ["flat_stat.ability_haste", "cooldown_reduction.*"]
+    },
+    "mobility": {
+      "description": "位移/加速技能",
+      "weight": 0.9,
+      "match_effects": ["mobility_boost.*", "flat_stat.move_speed", "flat_stat.ability_haste", "cooldown_reduction.*"]
+    },
+    "defense": {
+      "description": "防御/减伤技能",
+      "weight": 1.0,
+      "match_effects": ["defense_boost.*", "flat_stat.hp", "flat_stat.armor", "flat_stat.magic_resist", "flat_stat.tenacity"]
+    },
+    "ultimate": {
+      "description": "终极技能",
+      "weight": 1.5,
+      "match_effects": ["ultimate_boost.*", "cooldown_reduction.*.ultimate", "damage_amp.ultimate_only"]
+    },
+    "summoner": {
+      "description": "召唤师技能相关",
+      "weight": 0.7,
+      "match_effects": ["summoner_spell.*"]
+    },
+    "aoe": {
+      "description": "范围伤害技能",
+      "weight": 1.1,
+      "match_effects": ["damage_amp.*", "attack_modifier.aoe_on_hit", "attack_modifier.bounce"]
+    },
+    "skill_shot": {
+      "description": "非指向性技能",
+      "weight": 0.9,
+      "match_effects": ["flat_stat.ability_haste", "cooldown_reduction.*"]
+    }
+  },
+
+  "effect_to_damage_types": {
+    "flat_stat.ad": "damage_ad",
+    "flat_stat.attack_damage": "damage_ad",
+    "flat_stat.ap": "damage_ap",
+    "flat_stat.attack_speed": "auto_attack",
+    "flat_stat.crit_chance": "auto_attack",
+    "flat_stat.ability_haste": "all",
+    "flat_stat.hp": "defense",
+    "flat_stat.move_speed": "mobility",
+    "damage_amp.all_damage": "all",
+    "damage_amp.basic_skills": ["damage_ad", "damage_ap", "auto_attack"],
+    "damage_amp.attack_damage": "auto_attack",
+    "damage_amp.ultimate_only": "ultimate",
+    "damage_amp.specific_skill": "all",
+    "damage_amp.vs_larger_enemy": "all",
+    "damage_conversion.*": ["damage_ad", "damage_ap"],
+    "attack_modifier.extra_projectile": "auto_attack",
+    "attack_modifier.guaranteed_crit": "auto_attack",
+    "attack_modifier.dual_wield": "auto_attack",
+    "attack_modifier.bounce": ["damage_ad", "damage_ap", "auto_attack"],
+    "attack_modifier.void_rift": ["damage_ad", "damage_ap", "auto_attack"],
+    "attack_modifier.summon_shark": ["damage_ad", "damage_ap"],
+    "attack_modifier.aoe_on_hit": ["damage_ad", "damage_ap"],
+    "attack_modifier.max_hp_true_damage": ["damage_ad", "damage_ap", "auto_attack"],
+    "cooldown_reduction.*.ultimate": "ultimate",
+    "cooldown_reduction.*.other_basic_skills": ["damage_ad", "damage_ap"],
+    "cooldown_reduction.specific_skill.*": "all",
+    "cooldown_reduction.on_hit.*": "all",
+    "mobility_boost.*": "mobility",
+    "ultimate_boost.*": "ultimate",
+    "heal_shield_boost.*": "heal_shield",
+    "defense_boost.*": "defense"
+  },
+
+  "synergy_rules": {
+    "high_synergy": [
+      {"condition": "augment.champion_affinity matches champion.tags", "score": 0.8},
+      {"condition": "augment.tier == 'prismatic' && 'ultimate' in augment_skills && 'ultimate' in champion_skill_types", "score": 0.9},
+      {"condition": "augment.effects contains flat_stat.ap && champion has high_ap_ratio_skills", "score": 1.0},
+      {"condition": "augment.effects contains attack_modifier && champion has auto_attack_damage", "score": 0.85}
+    ],
+    "medium_synergy": [
+      {"condition": "augment.champion_affinity contains 'all'", "score": 0.5},
+      {"condition": "augment.ability_affinity overlaps champion_skill_types partially", "score": 0.6},
+      {"condition": "augment.tier == 'silver'", "score": 0.4}
+    ],
+    "low_synergy": [
+      {"condition": "no overlap between augment.ability_affinity and champion_skill_types", "score": 0.1},
+      {"condition": "augment effect conflicts with champion role", "score": 0.05}
+    ]
+  },
+
+  "default_champion_classification": {
+    "tags": {
+      "mage": {"primary_damage": "ap", "skill_focus": ["damage_ap", "cc"], "auto_attack_reliance": 0.2},
+      "assassin": {"primary_damage": "ad_ap_mixed", "skill_focus": ["damage_ad", "damage_ap", "mobility", "ultimate"], "auto_attack_reliance": 0.4},
+      "fighter": {"primary_damage": "ad", "skill_focus": ["damage_ad", "auto_attack", "mobility", "defense"], "auto_attack_reliance": 0.6},
+      "tank": {"primary_damage": "mixed_low", "skill_focus": ["defense", "cc", "damage_ad"], "auto_attack_reliance": 0.3},
+      "marksman": {"primary_damage": "ad", "skill_focus": ["auto_attack", "damage_ad"], "auto_attack_reliance": 0.9},
+      "support": {"primary_damage": "ap", "skill_focus": ["heal_shield", "cc", "damage_ap"], "auto_attack_reliance": 0.2},
+      "juggernaut": {"primary_damage": "ad", "skill_focus": ["damage_ad", "defense"], "auto_attack_reliance": 0.5},
+      "vanguard": {"primary_damage": "ad_ap_mixed", "skill_focus": ["defense", "cc", "mobility", "ultimate"], "auto_attack_reliance": 0.3},
+      "skirmisher": {"primary_damage": "ad", "skill_focus": ["damage_ad", "auto_attack", "mobility"], "auto_attack_reliance": 0.7},
+      "battlemage": {"primary_damage": "ap", "skill_focus": ["damage_ap", "defense"], "auto_attack_reliance": 0.3},
+      "enchanter": {"primary_damage": "ap", "skill_focus": ["heal_shield", "cc", "damage_ap"], "auto_attack_reliance": 0.1}
+    },
+    "default_stats": {
+      "ad": 60,
+      "ap": 0,
+      "hp": 1800,
+      "armor": 30,
+      "magic_resist": 30,
+      "attack_speed": 0.7,
+      "ability_haste": 0,
+      "move_speed": 340,
+      "crit_chance": 0,
+      "crit_damage": 1.75,
+      "level": 18
+    }
+  },
+
+  "report_formats": {
+    "short": {
+      "skill_benefit_levels": ["none", "minimal", "low", "medium", "high", "very_high"],
+      "score_range": {"min": 0, "max": 10}
+    }
+  }
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>海克斯增幅计算器</title>
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
+  <link rel="apple-touch-icon" href="/static/images/logo.png">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 头部 -->
+    <header class="header">
+      <div class="header-bg"></div>
+      <div class="header-content">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <h1>海克斯增幅计算器</h1>
+        </div>
+        <p class="subtitle">分析每个海克斯增幅对英雄技能的增益效果</p>
+        <div class="version-badge" id="versionBadge">加载中...</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- 步骤1: 选择英雄 -->
+      <section class="panel" id="stepChampion">
+        <div class="panel-header">
+          <span class="step-num">1</span>
+          <h2>选择英雄</h2>
+        </div>
+        <div class="champion-search">
+          <div class="search-box">
+            <input type="text" id="championSearch" placeholder="搜索英雄名称..." autocomplete="off">
+            <span class="search-icon">🔍</span>
+          </div>
+          <div class="filter-tags" id="roleFilter">
+            <button class="filter-btn active" data-tag="all">全部</button>
+            <button class="filter-btn" data-tag="Fighter">战士</button>
+            <button class="filter-btn" data-tag="Mage">法师</button>
+            <button class="filter-btn" data-tag="Assassin">刺客</button>
+            <button class="filter-btn" data-tag="Tank">坦克</button>
+            <button class="filter-btn" data-tag="Marksman">射手</button>
+            <button class="filter-btn" data-tag="Support">辅助</button>
+          </div>
+        </div>
+        <div class="champion-grid" id="championGrid">
+          <div class="loading">加载英雄数据中...</div>
+        </div>
+        <div class="selected-champion" id="selectedChampion" style="display:none;">
+          <div class="selected-champion-info">
+            <img id="champIcon" src="" alt="" class="champ-icon-big">
+            <div>
+              <span class="champ-name" id="champName"></span>
+              <span class="champ-title" id="champTitle"></span>
+            </div>
+          </div>
+          <button class="btn-change" id="changeChampion">更换英雄</button>
+        </div>
+        <!-- 技能展示 -->
+        <div class="skills-display" id="skillsDisplay" style="display:none;">
+          <div class="skills-title">技能一览</div>
+          <div class="skills-row" id="skillsRow">
+            <!-- JS动态生成 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 步骤2: 选择海克斯增幅 -->
+      <section class="panel" id="stepAugments">
+        <div class="panel-header">
+          <span class="step-num">2</span>
+          <h2>选择海克斯增幅（选1~4个）</h2>
+        </div>
+        <div class="augment-controls">
+          <div class="augment-search">
+            <input type="text" id="augmentSearch" placeholder="搜索增幅..." autocomplete="off">
+          </div>
+          <div class="augment-tier-filter">
+            <button class="tier-btn active" data-tier="all">全部</button>
+            <button class="tier-btn silver-btn" data-tier="silver">🥈白银</button>
+            <button class="tier-btn gold-btn" data-tier="gold">🥇黄金</button>
+            <button class="tier-btn prismatic-btn" data-tier="prismatic">💎棱彩</button>
+          </div>
+          <button class="btn-random" id="randomAugments">🎲 随机选4个</button>
+        </div>
+        <div class="augment-selected-row" id="augmentSlots">
+          <div class="augment-slot empty" data-slot="0" onclick="App.openAugmentPicker(0)">
+            <span class="slot-placeholder">+ 选择增幅</span>
+          </div>
+          <div class="augment-slot empty" data-slot="1" onclick="App.openAugmentPicker(1)">
+            <span class="slot-placeholder">+ 选择增幅</span>
+          </div>
+          <div class="augment-slot empty" data-slot="2" onclick="App.openAugmentPicker(2)">
+            <span class="slot-placeholder">+ 选择增幅</span>
+          </div>
+          <div class="augment-slot empty" data-slot="3" onclick="App.openAugmentPicker(3)">
+            <span class="slot-placeholder">+ 选择增幅</span>
+          </div>
+        </div>
+
+        <!-- 增幅选择器 Modal -->
+        <div class="modal" id="augmentPicker" style="display:none;">
+          <div class="modal-overlay" onclick="App.closeAugmentPicker()"></div>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>选择增幅</h3>
+              <input type="text" id="pickerSearch" placeholder="搜索..." oninput="App.filterPickerList()">
+              <button class="btn-close" onclick="App.closeAugmentPicker()">✕</button>
+            </div>
+            <div class="picker-filter">
+              <button class="tier-btn active" data-tier="all" onclick="App.filterPickerTier('all')">全部</button>
+              <button class="tier-btn silver-btn" data-tier="silver" onclick="App.filterPickerTier('silver')">🥈白银</button>
+              <button class="tier-btn gold-btn" data-tier="gold" onclick="App.filterPickerTier('gold')">🥇黄金</button>
+              <button class="tier-btn prismatic-btn" data-tier="prismatic" onclick="App.filterPickerTier('prismatic')">💎棱彩</button>
+            </div>
+            <div class="picker-list" id="pickerList">
+              <div class="loading">加载中...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 步骤3: 计算 -->
+      <section class="panel" id="stepCalculate">
+        <div class="panel-header">
+          <span class="step-num">3</span>
+          <h2>计算结果</h2>
+        </div>
+        <button class="btn-calculate" id="btnCalculate" disabled>
+          🚀 开始计算
+        </button>
+
+        <!-- 结果区域 -->
+        <div id="resultsArea" style="display:none;">
+          <!-- 综合排名 -->
+          <div class="ranking-section">
+            <h3>🏆 综合推荐排名</h3>
+            <div class="ranking-list" id="rankingList"></div>
+          </div>
+
+          <!-- 详细增益矩阵 -->
+          <div class="matrix-section">
+            <h3>📊 技能增益矩阵</h3>
+            <div class="table-wrapper">
+              <table class="matrix-table" id="matrixTable">
+                <thead id="matrixHeader"></thead>
+                <tbody id="matrixBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 各增幅详情 -->
+          <div class="details-section">
+            <h3>📋 各增幅详细分析</h3>
+            <div class="details-grid" id="detailsGrid"></div>
+          </div>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">⚡</div>
+          <p>选择英雄和增幅后，点击"开始计算"查看分析</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部 -->
+    <footer class="footer">
+      <p>海克斯增幅计算器 v1.0.0 | 数据来源: Riot DDragon API + CDragon | 数值为估算值，实际以游戏内为准</p>
+      <p>数据版本: <span id="footerVersion">-</span> | 英雄数: <span id="footerChamps">-</span> | 增幅数: <span id="footerAugments">-</span></p>
+        <p>https://github.com/hkear/hextech-calc</p>
+    </footer>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

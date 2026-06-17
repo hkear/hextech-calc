@@ -1,0 +1,150 @@
+{
+  "_version": "16.12.1",
+  "_updated": "2026-06-16 22:21:04",
+  "id": "Leona",
+  "name": "曙光女神",
+  "title": "蕾欧娜",
+  "tags": [
+    "Tank",
+    "Support"
+  ],
+  "stats": {
+    "hp": 646,
+    "hpperlevel": 101,
+    "mp": 302,
+    "mpperlevel": 40,
+    "movespeed": 335,
+    "armor": 43,
+    "armorperlevel": 4.8,
+    "spellblock": 32,
+    "spellblockperlevel": 2.05,
+    "attackrange": 125,
+    "hpregen": 8.5,
+    "hpregenperlevel": 0.85,
+    "mpregen": 6,
+    "mpregenperlevel": 0.8,
+    "crit": 0,
+    "critperlevel": 0,
+    "attackdamage": 60,
+    "attackdamageperlevel": 0,
+    "attackspeedperlevel": 2.9,
+    "attackspeed": 0.625
+  },
+  "skills": {
+    "passive": {
+      "name": "日光",
+      "description": "技能会在敌人身上施加【日光】效果，持续1.5秒。在此期间，蕾欧娜友军对这些目标造成伤害时，会触发【日光】，使目标受到额外的魔法伤害。",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/passive/LeonaSunlight.png"
+    },
+    "q": {
+      "name": "破晓之盾",
+      "key": "Q",
+      "description": "蕾欧娜用盾进行下次普通攻击，造成额外魔法伤害并晕眩目标。",
+      "tooltip": "蕾欧娜的下次攻击会<status>晕眩</status>目标{{ e1 }}秒，并造成额外的<magicDamage>{{ totaldamagetooltip }}</magicDamage>魔法伤害。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/LeonaShieldOfDaybreak.png",
+      "cooldown": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "cost": [
+        30,
+        35,
+        40,
+        45,
+        50
+      ],
+      "range": [
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "maxrank": 5
+    },
+    "w": {
+      "name": "日蚀",
+      "key": "W",
+      "description": "蕾欧娜举起盾牌，提供伤害减免、护甲和魔法抗性。当持续时间首次结束时，如果附近有敌人，那么她会对其造成魔法伤害并延长效果的持续时间。",
+      "tooltip": "蕾欧娜举起她的盾牌，使即将到来的伤害降低{{ flatdamagereduction }}并获得<scaleArmor>{{ bonusarmortooltip }}护甲</scaleArmor>和<scaleMR>{{ bonusmrtooltip }}魔法抗性</scaleMR>，持续{{ e3 }}秒。之后，她的盾牌会爆炸，对附近的敌人造成<magicDamage>{{ totaldamagetooltip }}魔法伤害</magicDamage>。如果她命中了至少一名敌人，那么她会将<scaleArmor>护甲</scaleArmor>和<scaleMR>魔法抗性</scaleMR>加成延续额外的{{ e3 }}秒。<br />{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/LeonaSolarBarrier.png",
+      "cooldown": [
+        14,
+        13,
+        12,
+        11,
+        10
+      ],
+      "cost": [
+        60,
+        60,
+        60,
+        60,
+        60
+      ],
+      "range": [
+        450,
+        450,
+        450,
+        450,
+        450
+      ],
+      "maxrank": 5
+    },
+    "e": {
+      "name": "天顶之刃",
+      "key": "E",
+      "description": "蕾欧娜投掷一束日光，对直线上的所有敌人造成魔法伤害。当效果消失时，蕾欧娜会冲向最后一个被击中的敌人并使其无法移动。",
+      "tooltip": "蕾欧娜用光明之剑进行猛刺，造成<magicDamage>{{ totaldamagetooltip }}魔法伤害</magicDamage>。最后一个被命中的敌方英雄将会被<status>禁锢</status>{{ e2 }}秒，并且蕾欧娜将会冲向该英雄。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/LeonaZenithBlade.png",
+      "cooldown": [
+        12,
+        10.5,
+        9,
+        7.5,
+        6
+      ],
+      "cost": [
+        40,
+        45,
+        50,
+        55,
+        60
+      ],
+      "range": [
+        875,
+        875,
+        875,
+        875,
+        875
+      ],
+      "maxrank": 5
+    },
+    "r": {
+      "name": "日炎耀斑",
+      "key": "R",
+      "description": "蕾欧娜召唤一道太阳光束，对区域内的敌人造成伤害。区域中心的敌人会被晕眩，并且外围的敌人会被减速。",
+      "tooltip": "蕾欧娜召唤一道太阳光束，造成<magicDamage>{{ explosioncalculateddamage }}魔法伤害</magicDamage>并使敌人<status>减速</status>{{ slowpercent }}%，持续{{ ccduration }}秒。处于区域正中的敌人会受到<status>晕眩</status>效果而非<status>减速</status>效果。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/LeonaSolarFlare.png",
+      "cooldown": [
+        90,
+        75,
+        60
+      ],
+      "cost": [
+        100,
+        100,
+        100
+      ],
+      "range": [
+        1200,
+        1200,
+        1200
+      ],
+      "maxrank": 3
+    }
+  }
+}

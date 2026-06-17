@@ -1,0 +1,150 @@
+{
+  "_version": "16.12.1",
+  "_updated": "2026-06-16 22:21:49",
+  "id": "Garen",
+  "name": "德玛西亚之力",
+  "title": "盖伦",
+  "tags": [
+    "Fighter",
+    "Tank"
+  ],
+  "stats": {
+    "hp": 690,
+    "hpperlevel": 98,
+    "mp": 0,
+    "mpperlevel": 0,
+    "movespeed": 340,
+    "armor": 38,
+    "armorperlevel": 4.2,
+    "spellblock": 32,
+    "spellblockperlevel": 1.55,
+    "attackrange": 175,
+    "hpregen": 8,
+    "hpregenperlevel": 0.5,
+    "mpregen": 0,
+    "mpregenperlevel": 0,
+    "crit": 0,
+    "critperlevel": 0,
+    "attackdamage": 69,
+    "attackdamageperlevel": 0,
+    "attackspeedperlevel": 3.65,
+    "attackspeed": 0.625
+  },
+  "skills": {
+    "passive": {
+      "name": "坚韧",
+      "description": "如果盖伦近期没有受到伤害或者被敌方技能命中，那么他会每秒回复若干百分比的总生命值。",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/passive/Garen_Passive.png"
+    },
+    "q": {
+      "name": "致命打击",
+      "key": "Q",
+      "description": "盖伦的移动速度获得爆发性提升，同时移除身上的所有减速效果。他的下次攻击将打击敌人的要害部位，造成额外伤害并将目标沉默。",
+      "tooltip": "盖伦移除身上的所有<status>减速</status>效果并获得<speed>{{ movementspeedamount*100 }}%移动速度</speed>，持续{{ movementspeedduration }}秒。<br /><br />他的下次攻击会使目标<status>沉默</status>{{ silenceduration }}秒并造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/GarenQ.png",
+      "cooldown": [
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "cost": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "range": [
+        300,
+        300,
+        300,
+        300,
+        300
+      ],
+      "maxrank": 5
+    },
+    "w": {
+      "name": "勇气",
+      "key": "W",
+      "description": "盖伦被动地通过击杀敌人来提升护甲和魔法抗性。他也可以激活这个技能来暂时获得一层护盾和韧性，并在接下来的较长持续时间里获得较弱的伤害减免效果。",
+      "tooltip": "<spellPassive>被动：</spellPassive>盖伦获得<scaleArmor>{{ resistsfortooltip }}额外护甲</scaleArmor>和<scaleMR>{{ resistsfortooltip }}额外魔法抗性</scaleMR>。击杀单位时会永久提供<attention>{{ resistgainonkilltooltip }}双抗</attention>，至多至最大值<attention>{{ resistmax }}</attention>。<br /><br /><spellActive>主动：</spellActive>盖伦加固他的勇气{{ drduration }}秒，使即将到来的伤害降低{{ drpercent*100 }}%。他还会获得持续{{ upfrontduration }}秒的<shield>{{ totalshield }}护盾值</shield>和<slow>{{ upfronttenacity*100 }}%韧性</slow>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/GarenW.png",
+      "cooldown": [
+        22,
+        19.5,
+        17,
+        14.5,
+        12
+      ],
+      "cost": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "range": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "maxrank": 5
+    },
+    "e": {
+      "name": "审判",
+      "key": "E",
+      "description": "盖伦快速地旋转身体挥舞大剑，并对邻近敌人造成物理伤害。",
+      "tooltip": "盖伦快速地旋舞大剑，持续{{ duration }}秒，每旋转一圈造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>，共旋转{{ f1 }}圈。相距最近的敌人受到<physicalDamage>{{ nearestenemybonus*100 }}%提升伤害</physicalDamage>。被{{ stackstoshred }}圈旋转命中的敌方英雄会损失<scaleArmor>{{ shredamount*100 }}%护甲</scaleArmor>，持续{{ shredduration }}秒。<br /><br /><recast>再次施放</recast>：盖伦提前结束这个技能。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/GarenE.png",
+      "cooldown": [
+        9,
+        8.25,
+        7.5,
+        6.75,
+        6
+      ],
+      "cost": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "range": [
+        325,
+        325,
+        325,
+        325,
+        325
+      ],
+      "maxrank": 5
+    },
+    "r": {
+      "name": "德玛西亚正义",
+      "key": "R",
+      "description": "盖伦召唤德玛西亚之力，试图处决一名敌方英雄。",
+      "tooltip": "盖伦召唤德玛西亚之力来击杀他的敌人，造成<trueDamage>{{ basedamage }}外加{{ executedamage*100 }}%已损失生命值的真实伤害</trueDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/GarenR.png",
+      "cooldown": [
+        120,
+        100,
+        80
+      ],
+      "cost": [
+        0,
+        0,
+        0
+      ],
+      "range": [
+        400,
+        400,
+        400
+      ],
+      "maxrank": 3
+    }
+  }
+}

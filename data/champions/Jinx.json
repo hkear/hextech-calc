@@ -1,0 +1,149 @@
+{
+  "_version": "16.12.1",
+  "_updated": "2026-06-16 22:21:51",
+  "id": "Jinx",
+  "name": "暴走萝莉",
+  "title": "金克丝",
+  "tags": [
+    "Marksman"
+  ],
+  "stats": {
+    "hp": 630,
+    "hpperlevel": 105,
+    "mp": 260,
+    "mpperlevel": 50,
+    "movespeed": 325,
+    "armor": 26,
+    "armorperlevel": 4.2,
+    "spellblock": 30,
+    "spellblockperlevel": 1.3,
+    "attackrange": 525,
+    "hpregen": 3.75,
+    "hpregenperlevel": 0.5,
+    "mpregen": 6.7,
+    "mpregenperlevel": 1,
+    "crit": 0,
+    "critperlevel": 0,
+    "attackdamage": 59,
+    "attackdamageperlevel": 0,
+    "attackspeedperlevel": 1,
+    "attackspeed": 0.625
+  },
+  "skills": {
+    "passive": {
+      "name": "罪恶快感",
+      "description": "金克丝每当参与击杀或摧毁一名英雄、一个史诗级野怪或一座建筑物后，她的移动速度和攻击速度就会得到显著提升。",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/passive/Jinx_Passive.png"
+    },
+    "q": {
+      "name": "枪炮交响曲！",
+      "key": "Q",
+      "description": "金克丝可以通过切换武器来改变普通攻击的方式。在用她的轻机枪“砰砰”攻击时，她的攻击速度会提升。在用她的火箭发射器“鱼骨头”攻击时，她的普通攻击会造成范围伤害，攻击距离提升，但会消耗法力值并且攻击得更慢。",
+      "tooltip": "金克丝可在【鱼骨头—火箭发射器】和【砰砰枪—轻机枪】之间切换武器。<br /><br />在使用火箭发射器时，金克丝的攻击会对目标和附近的敌人造成<physicalDamage>{{ rocketdamage }}物理伤害</physicalDamage>，提升{{ rocketbonusrange }}距离，消耗法力，但所享的攻速加成减少{{ rocketaspdpenalty*100 }}%。<br /><br />在使用轻机枪时，金克丝的攻击提供<attackSpeed>攻击速度</attackSpeed>，持续{{ minigunattackspeedduration }}秒，可叠加至多{{ minigunattackspeedstacks }}次(<attackSpeed>最大攻速加成为+{{ minigunattackspeedmax }}% %i:scaleAS%</attackSpeed>)。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JinxQ.png",
+      "cooldown": [
+        0.9,
+        0.9,
+        0.9,
+        0.9,
+        0.9
+      ],
+      "cost": [
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "range": [
+        600,
+        600,
+        600,
+        600,
+        600
+      ],
+      "maxrank": 5
+    },
+    "w": {
+      "name": "震荡电磁波！",
+      "key": "W",
+      "description": "金克丝使用她的震荡手枪“电磁器”来发射震荡波，让被命中的第一个敌人暴露在己方视野中（可使隐形英雄现形），并对其造成伤害和减速效果。",
+      "tooltip": "金克丝发射一束震荡波，对命中的第一个目标造成<physicalDamage>{{ totaldamage }}物理伤害</physicalDamage>，使其<status>减速</status>{{ slowpercent }}%并显形，持续{{ slowduration }}秒。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JinxW.png",
+      "cooldown": [
+        8,
+        7,
+        6,
+        5,
+        4
+      ],
+      "cost": [
+        40,
+        45,
+        50,
+        55,
+        60
+      ],
+      "range": [
+        1450,
+        1450,
+        1450,
+        1450,
+        1450
+      ],
+      "maxrank": 5
+    },
+    "e": {
+      "name": "嚼火者手雷！",
+      "key": "E",
+      "description": "金克丝扔出一串陷阱手雷。手雷会在5秒后爆炸，让敌人着火。嚼火者手雷将会袭击路过的敌方英雄，并将他们束缚在原地。",
+      "tooltip": "金克丝扔出3颗持续{{ grenadeduration }}秒的嚼火者手雷，手雷会在接触到敌方英雄时爆炸，将其<status>禁锢</status>{{ rootduration }}秒并对附近敌人造成<magicDamage>{{ totaldamage }}魔法伤害</magicDamage>。{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JinxE.png",
+      "cooldown": [
+        24,
+        20.5,
+        17,
+        13.5,
+        10
+      ],
+      "cost": [
+        90,
+        90,
+        90,
+        90,
+        90
+      ],
+      "range": [
+        925,
+        925,
+        925,
+        925,
+        925
+      ],
+      "maxrank": 5
+    },
+    "r": {
+      "name": "超究极死神飞弹！",
+      "key": "R",
+      "description": "金克丝发射一枚能够跨越整个地图的飞弹，并且飞行的时间越长，伤害值越高。飞弹会在命中一名敌方英雄后爆炸，对目标和目标附近的敌人造成伤害，且目标的生命值越低，所受的伤害值越高。",
+      "tooltip": "金克丝发射一枚飞弹，在首次命中敌方英雄后爆炸，造成<physicalDamage>{{ damagefloor }}到{{ damagemax }}+{{ percentdamage }}%已损失生命值的物理伤害</physicalDamage>，飞弹在飞行时间超过1秒后会持续提升伤害。目标附近的敌人受到{{ aoedamagemult*100 }}%伤害。<br /><br /><rules>对野怪的已损失生命值伤害无法超过{{ monsterexecutemax }}。</rules>{{ spellmodifierdescriptionappend }}",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.12.1/img/spell/JinxR.png",
+      "cooldown": [
+        85,
+        65,
+        45
+      ],
+      "cost": [
+        100,
+        100,
+        100
+      ],
+      "range": [
+        25000,
+        25000,
+        25000
+      ],
+      "maxrank": 3
+    }
+  }
+}

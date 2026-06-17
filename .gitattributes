@@ -1,0 +1,13 @@
+# 统一行尾
+* text=auto
+
+# Shell 脚本
+*.sh text eol=lf
+
+# Python
+*.py text eol=lf
+
+# 二进制文件（不尝试文本对比）
+*.db binary
+*.png binary
+*.jpg binary

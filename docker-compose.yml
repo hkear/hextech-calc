@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  hextech-calc:
+    build: .
+    container_name: hextech-calc
+    restart: unless-stopped
+    ports:
+      - "9001:9001"
+    environment:
+      - TZ=Asia/Shanghai
+      - PORT=9001
+      - GUNICORN_WORKERS=4
+      - GUNICORN_TIMEOUT=120
+      - AUTO_UPDATE=true
+    volumes:
+      # 持久化数据库（可选）
+      - hextech-calc-data:/data
+    labels:
+      description: "海克斯增幅计算器"
+      version: "2.0.0"
+
+volumes:
+  hextech-calc-data:
+    driver: local

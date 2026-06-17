@@ -1,0 +1,29 @@
+[
+  {
+    "id": "20260617_084345",
+    "version": "2.0.0",
+    "ddragon_version": "16.12.1",
+    "total": 637,
+    "curated": 20,
+    "inferred": 617,
+    "created": "2026-06-17 08:43:45"
+  },
+  {
+    "id": "20260617_084442",
+    "version": "2.0.0",
+    "ddragon_version": "16.12.1",
+    "total": 640,
+    "curated": 115,
+    "inferred": 525,
+    "created": "2026-06-17 08:44:42"
+  },
+  {
+    "id": "20260617_084620",
+    "version": "2.0.0",
+    "ddragon_version": "16.12.1",
+    "total": 640,
+    "curated": 115,
+    "inferred": 525,
+    "created": "2026-06-17 08:46:20"
+  }
+]

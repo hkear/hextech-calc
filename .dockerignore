@@ -1,0 +1,39 @@
+# 海克斯增幅计算器 - Docker 构建忽略清单
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# 环境
+.env
+.env.*
+venv/
+.venv/
+*.venv*
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+*.pid
+
+# 不需要的文件
+hextech-calc.service
+start.sh

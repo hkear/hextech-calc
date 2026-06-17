@@ -1,0 +1,886 @@
+{
+  "_meta": {
+    "description": "海克斯大乱斗增幅效果数据库",
+    "version": "1.0.0",
+    "last_updated": "2026-06-16",
+    "game_version": "16.12.1",
+    "notes": "数值基于社区资料估算，部分标注'估算'。实际效果以游戏内为准。"
+  },
+
+  "tiers": {
+    "silver": {"name": "白银阶", "color": "#C0C0C0", "base_power": 1.0},
+    "gold": {"name": "黄金阶", "color": "#FFD700", "base_power": 2.0},
+    "prismatic": {"name": "棱彩阶", "color": "#FF00FF", "base_power": 3.5}
+  },
+
+  "effect_categories": {
+    "flat_stat": "直接属性加成 (如 +50AP, +1200HP)",
+    "percent_stat": "百分比属性加成",
+    "damage_amp": "伤害增幅 (总伤/某类伤害提升X%)",
+    "damage_conversion": "伤害类型转换 (物→魔/魔→真等)",
+    "cooldown_reduction": "冷却缩减",
+    "attack_modifier": "普攻特效强化 (双发、连击等)",
+    "ultimate_boost": "大招特化 (刷新、不可阻挡等)",
+    "defense_boost": "防御强化 (护盾、减伤、韧性)",
+    "mobility_boost": "机动性强化 (移速、闪现)",
+    "heal_shield_boost": "治疗护盾强化",
+    "summoner_spell": "召唤师技能强化",
+    "special_effect": "特殊机制 (套娃、克隆等)",
+    "transcendence": "品阶质变升级",
+    "quest": "任务型 (完成条件获得额外收益)"
+  },
+
+  "augments": {
+    "ARAM_Archmage": {
+      "name": "大法师",
+      "tier": "prismatic",
+      "description": "获得50法术强度；技能伤害的20%转化为真实伤害",
+      "effects": [
+        {"type": "flat_stat", "stat": "ap", "value": 50, "scaling": null},
+        {"type": "damage_conversion", "from": "magic", "to": "true", "percent": 0.20}
+      ],
+      "ability_affinity": ["damage_ap", "damage_true"],
+      "champion_affinity": ["mage", "assassin"],
+      "calc_vars": {"ap_flat": 50, "true_convert": 0.20}
+    },
+    "ARAM_BladeWaltz": {
+      "name": "利刃华尔兹",
+      "tier": "prismatic",
+      "description": "攻击/技能命中同一目标3次后，下一次攻击或技能必定暴击(200%伤害)；+20%攻速，+15%暴击伤害",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.20},
+        {"type": "flat_stat", "stat": "crit_damage", "value": 0.15},
+        {"type": "attack_modifier", "subtype": "guaranteed_crit", "condition": "3_hits", "crit_damage": 2.0}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["marksman", "fighter", "assassin"],
+      "calc_vars": {"as_bonus": 0.20, "crit_dmg_bonus": 0.15, "crit_threshold": 3}
+    },
+    "ARAM_UltimateRefresh": {
+      "name": "终极刷新",
+      "tier": "prismatic",
+      "description": "放大招后，每次造成伤害/治疗减少其1.5秒冷却(对英雄减2秒)；+15技能急速",
+      "effects": [
+        {"type": "flat_stat", "stat": "ability_haste", "value": 15},
+        {"type": "cooldown_reduction", "subtype": "on_hit", "target": "ultimate", "value_per_hit": 1.5, "hero_value": 2.0}
+      ],
+      "ability_affinity": ["ultimate"],
+      "champion_affinity": ["mage", "assassin", "fighter"],
+      "calc_vars": {"haste_bonus": 15, "cdr_per_hit": 1.5, "cdr_per_hero_hit": 2.0}
+    },
+    "ARAM_Omnidragon": {
+      "name": "全能龙魂",
+      "tier": "prismatic",
+      "description": "获得所有4种元素龙魂效果(效果减半)；+5全属性",
+      "effects": [
+        {"type": "special_effect", "subtype": "all_dragon_souls", "effectiveness": 0.5},
+        {"type": "flat_stat", "stat": "all_stats", "value": 5}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "defense", "mobility"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"dragon_soul_efficiency": 0.5, "all_stats": 5}
+    },
+    "ARAM_BossOfArena": {
+      "name": "副本BOSS",
+      "tier": "prismatic",
+      "description": "+500最大生命值；周围400码每有一个敌方英雄获得30护甲/魔抗与15%韧性",
+      "effects": [
+        {"type": "flat_stat", "stat": "hp", "value": 500},
+        {"type": "defense_boost", "subtype": "per_enemy", "stat": "armor_mr", "value_per_enemy": 30, "tenacity_per_enemy": 0.15}
+      ],
+      "ability_affinity": ["defense", "damage_ad", "damage_ap"],
+      "champion_affinity": ["tank", "fighter", "juggernaut"],
+      "calc_vars": {"hp_bonus": 500, "resist_per_enemy": 30, "tenacity_per_enemy": 0.15}
+    },
+    "ARAM_BacktoBasics": {
+      "name": "回归基本功",
+      "tier": "prismatic",
+      "description": "基础攻击和Q/W/E伤害提升25%，但终极技能被禁用",
+      "effects": [
+        {"type": "damage_amp", "subtype": "basic_skills", "percent": 0.25, "penalty": "no_ultimate"}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["marksman", "fighter", "mage"],
+      "calc_vars": {"basic_skill_amp": 0.25, "ultimate_disabled": true}
+    },
+    "ARAM_Eureka": {
+      "name": "尤里卡",
+      "tier": "prismatic",
+      "description": "每次击杀或助攻永久+2法强(无上限)；每升一级+10额外AP",
+      "effects": [
+        {"type": "flat_stat", "stat": "ap", "value": 10, "scaling": "per_level"},
+        {"type": "flat_stat", "stat": "ap", "value": 2, "scaling": "per_kill_assist", "max": null}
+      ],
+      "ability_affinity": ["damage_ap"],
+      "champion_affinity": ["mage", "assassin"],
+      "calc_vars": {"ap_per_level": 10, "ap_per_kill": 2, "ap_cap": null}
+    },
+    "ARAM_StandAlone": {
+      "name": "卓尔不群",
+      "tier": "gold",
+      "description": "单独一人时获得35%全属性(攻击力、AP、生命、双抗、攻速、技能急速、移速)",
+      "effects": [
+        {"type": "percent_stat", "stat": "all_stats", "value": 0.35, "condition": "no_allies_nearby"}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"all_stats_percent": 0.35, "condition": "solo"}
+    },
+    "ARAM_DoubleTap": {
+      "name": "双发快射",
+      "tier": "gold",
+      "description": "基础攻击额外发射一枚次要弹体，造成75%攻击力的物理伤害(可暴击、可触发攻击特效)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "extra_projectile", "damage_percent": 0.75, "damage_type": "physical", "can_crit": true, "can_proc_onhit": true}
+      ],
+      "ability_affinity": ["auto_attack"],
+      "champion_affinity": ["marksman", "fighter", "assassin"],
+      "calc_vars": {"extra_proj_damage": 0.75, "can_crit": true, "can_onhit": true}
+    },
+    "ARAM_FullFirepower": {
+      "name": "火力全开",
+      "tier": "gold",
+      "description": "技能命中敌方英雄后进入火力状态5秒：攻速+80%，攻击伤害+20%(冷却6秒)",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.80, "condition": "after_skill_hit", "duration": 5},
+        {"type": "damage_amp", "subtype": "attack_damage", "percent": 0.20, "condition": "after_skill_hit", "duration": 5}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["marksman", "fighter"],
+      "calc_vars": {"as_bonus": 0.80, "ad_amp": 0.20, "duration": 5, "cooldown": 6}
+    },
+    "ARAM_AtmasResurgence": {
+      "name": "狂徒豪气",
+      "tier": "gold",
+      "description": "+1200最大生命值，但治疗和护盾效果降低40%",
+      "effects": [
+        {"type": "flat_stat", "stat": "hp", "value": 1200},
+        {"type": "heal_shield_boost", "subtype": "penalty", "value": -0.40}
+      ],
+      "ability_affinity": ["defense"],
+      "champion_affinity": ["tank", "juggernaut", "fighter"],
+      "calc_vars": {"hp_bonus": 1200, "heal_shield_penalty": -0.40}
+    },
+    "ARAM_ComboMaster": {
+      "name": "连招大师",
+      "tier": "gold",
+      "description": "2秒内用普攻和技能各命中同一英雄时，获得60%攻速和25%移速持续3秒(冷却8秒)",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.60, "condition": "auto_skill_combo", "duration": 3},
+        {"type": "flat_stat", "stat": "move_speed", "value": 0.25, "condition": "auto_skill_combo", "duration": 3}
+      ],
+      "ability_affinity": ["auto_attack", "mobility"],
+      "champion_affinity": ["fighter", "assassin", "marksman"],
+      "calc_vars": {"as_bonus": 0.60, "ms_bonus": 0.25, "duration": 3, "cooldown": 8}
+    },
+    "ARAM_AstralBody": {
+      "name": "星界躯体",
+      "tier": "gold",
+      "description": "获得20%最大生命值(基础生命×0.2)，但体型增大15%",
+      "effects": [
+        {"type": "percent_stat", "stat": "hp", "value": 0.20}
+      ],
+      "ability_affinity": ["defense"],
+      "champion_affinity": ["tank", "juggernaut", "fighter", "vanguard"],
+      "calc_vars": {"hp_percent": 0.20}
+    },
+    "ARAM_UltimateUnstoppable": {
+      "name": "终极不可阻挡",
+      "tier": "silver",
+      "description": "施放大招时获得不可阻挡状态持续3秒；摧毁防御塔或造成击杀后大招冷却-10秒",
+      "effects": [
+        {"type": "ultimate_boost", "subtype": "unstoppable", "duration": 3},
+        {"type": "cooldown_reduction", "subtype": "on_kill_takedown", "target": "ultimate", "value": 10}
+      ],
+      "ability_affinity": ["ultimate", "mobility"],
+      "champion_affinity": ["tank", "vanguard", "fighter", "assassin"],
+      "calc_vars": {"unstoppable_duration": 3, "cdr_on_kill": 10}
+    },
+    "ARAM_SpeedIsKing": {
+      "name": "唯快不破",
+      "tier": "silver",
+      "description": "+8%移速；移速超过400时获得+30%攻速，普攻附带10+目标移速×0.05魔法伤害",
+      "effects": [
+        {"type": "flat_stat", "stat": "move_speed", "value": 0.08, "is_percent": true},
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.30, "condition": "ms_above_400"},
+        {"type": "attack_modifier", "subtype": "bonus_magic_damage", "formula": "10 + target_ms * 0.05", "condition": "ms_above_400"}
+      ],
+      "ability_affinity": ["auto_attack", "mobility"],
+      "champion_affinity": ["marksman", "assassin", "skirmisher"],
+      "calc_vars": {"ms_percent": 0.08, "as_condition": 0.30, "ms_threshold": 400, "onhit_base": 10, "onhit_ms_ratio": 0.05}
+    },
+    "ARAM_ADAPt": {
+      "name": "物理转魔法",
+      "tier": "silver",
+      "description": "物理伤害的30%转化为魔法伤害",
+      "effects": [
+        {"type": "damage_conversion", "from": "physical", "to": "magic", "percent": 0.30}
+      ],
+      "ability_affinity": ["damage_ad"],
+      "champion_affinity": ["marksman", "fighter", "assassin"],
+      "calc_vars": {"convert_percent": 0.30, "from": "physical", "to": "magic"}
+    },
+    "ARAM_MagicToPhysical": {
+      "name": "魔法转物理",
+      "tier": "silver",
+      "description": "魔法伤害的30%转化为物理伤害",
+      "effects": [
+        {"type": "damage_conversion", "from": "magic", "to": "physical", "percent": 0.30}
+      ],
+      "ability_affinity": ["damage_ap"],
+      "champion_affinity": ["mage", "assassin", "tank"],
+      "calc_vars": {"convert_percent": 0.30, "from": "magic", "to": "physical"}
+    },
+    "ARAM_Transcendence2": {
+      "name": "质变：黄金阶",
+      "tier": "silver",
+      "description": "将1个已持有的白银阶增幅升级为黄金阶",
+      "effects": [
+        {"type": "transcendence", "from_tier": "silver", "to_tier": "gold"}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"from": "silver", "to": "gold"}
+    },
+    "ARAM_Transcendence3": {
+      "name": "质变：棱彩阶",
+      "tier": "gold",
+      "description": "将1个已持有的黄金阶增幅升级为棱彩阶",
+      "effects": [
+        {"type": "transcendence", "from_tier": "gold", "to_tier": "prismatic"}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"from": "gold", "to": "prismatic"}
+    },
+    "ARAM_TranscendenceChaos": {
+      "name": "质变：混沌",
+      "tier": "prismatic",
+      "description": "将1个已有棱彩增幅升级为混沌(同时获得两个棱彩效果)",
+      "effects": [
+        {"type": "transcendence", "from_tier": "prismatic", "to_tier": "chaos"}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"from": "prismatic", "to": "chaos", "double_effect": true}
+    },
+    "ARAM_Transcendence1": {
+      "name": "质变：白银阶",
+      "tier": "prismatic",
+      "description": "降级：将1个棱彩增幅降为白银阶(可能用于特定策略)",
+      "effects": [
+        {"type": "transcendence", "from_tier": "prismatic", "to_tier": "silver"}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"from": "prismatic", "to": "silver", "downgrade": true}
+    },
+    "ARAM_AllForYou": {
+      "name": "全心为你",
+      "tier": "gold",
+      "description": "你的治疗和护盾效果提升50%；对友军施放时额外提升20%",
+      "effects": [
+        {"type": "heal_shield_boost", "subtype": "self", "value": 0.50},
+        {"type": "heal_shield_boost", "subtype": "ally", "value": 0.70}
+      ],
+      "ability_affinity": ["heal_shield"],
+      "champion_affinity": ["support", "enchanter"],
+      "calc_vars": {"self_boost": 0.50, "ally_boost": 0.70}
+    },
+    "ARAM_FireSale": {
+      "name": "火爆甩卖",
+      "tier": "silver",
+      "description": "装备售价降低20%；出售装备获得全额金币",
+      "effects": [
+        {"type": "special_effect", "subtype": "item_discount", "percent": 0.20},
+        {"type": "special_effect", "subtype": "full_refund"}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"item_discount": 0.20, "full_refund": true}
+    },
+    "ARAM_Goliath": {
+      "name": "歌利亚巨人",
+      "tier": "prismatic",
+      "description": "体型增大40%；根据额外生命值获得攻击力(每100额外HP+1.5攻击力)",
+      "effects": [
+        {"type": "percent_stat", "stat": "size", "value": 0.40},
+        {"type": "percent_stat", "stat": "attack_damage", "value_by_stat": "bonus_hp", "ratio": 0.015}
+      ],
+      "ability_affinity": ["damage_ad", "defense"],
+      "champion_affinity": ["tank", "juggernaut", "fighter"],
+      "calc_vars": {"size_pct": 0.40, "ad_per_100hp": 1.5}
+    },
+    "ARAM_GiantSlayer": {
+      "name": "巨人杀手",
+      "tier": "prismatic",
+      "description": "对最大生命值高于你的敌人造成最多25%额外伤害(基于生命差值)",
+      "effects": [
+        {"type": "damage_amp", "subtype": "vs_larger_enemy", "percent_max": 0.25}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["marksman", "mage", "assassin"],
+      "calc_vars": {"max_amp": 0.25, "condition": "target_hp_higher"}
+    },
+    "ARAM_PandorasBox": {
+      "name": "潘朵拉的盒子",
+      "tier": "prismatic",
+      "description": "每60秒随机获得一个其他棱彩阶增幅效果(持续60秒)",
+      "effects": [
+        {"type": "special_effect", "subtype": "random_prismatic", "interval": 60}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"interval": 60, "random_effect": true}
+    },
+    "ARAM_UltimateAwakening": {
+      "name": "终极唤醒",
+      "tier": "prismatic",
+      "description": "大招的冷却时间降低40%；大招伤害提升30%",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "global", "target": "ultimate", "percent": 0.40},
+        {"type": "damage_amp", "subtype": "ultimate_only", "percent": 0.30}
+      ],
+      "ability_affinity": ["ultimate"],
+      "champion_affinity": ["mage", "assassin", "tank", "fighter"],
+      "calc_vars": {"ult_cdr": 0.40, "ult_damage_amp": 0.30}
+    },
+    "ARAM_PlaceShift": {
+      "name": "位面转移",
+      "tier": "prismatic",
+      "description": "你的位移技能获得额外一段充能；位移距离+20%",
+      "effects": [
+        {"type": "mobility_boost", "subtype": "extra_dash_charge", "count": 1},
+        {"type": "mobility_boost", "subtype": "dash_range", "percent": 0.20}
+      ],
+      "ability_affinity": ["mobility"],
+      "champion_affinity": ["assassin", "fighter", "skirmisher"],
+      "calc_vars": {"extra_charge": 1, "range_bonus": 0.20}
+    },
+    "ARAM_YouCantTouchMe": {
+      "name": "你摸不到",
+      "tier": "prismatic",
+      "description": "获得25%闪避几率(可闪避普攻)；+10%移速",
+      "effects": [
+        {"type": "defense_boost", "subtype": "dodge", "percent": 0.25},
+        {"type": "flat_stat", "stat": "move_speed", "value": 0.10}
+      ],
+      "ability_affinity": ["auto_attack", "mobility"],
+      "champion_affinity": ["marksman", "assassin", "skirmisher"],
+      "calc_vars": {"dodge_pct": 0.25, "ms_bonus": 0.10}
+    },
+    "ARAM_Mageslayer": {
+      "name": "殊死搏斗",
+      "tier": "gold",
+      "description": "对英雄造成伤害时附加4%目标最大生命值的真实伤害(近战翻倍)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "max_hp_true_damage", "percent": 0.04, "melee_multiplier": 2}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["fighter", "tank", "juggernaut"],
+      "calc_vars": {"max_hp_pct": 0.04, "melee_mult": 2.0}
+    },
+    "ARAM_WizardLizard": {
+      "name": "巫师式思考",
+      "tier": "silver",
+      "description": "每10秒，你的下一个技能造成额外60-180(基于等级)魔法伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "empowered_next_skill", "interval": 10, "damage_base": 60, "damage_per_level": 7}
+      ],
+      "ability_affinity": ["damage_ap", "damage_ad"],
+      "champion_affinity": ["mage", "assassin", "tank"],
+      "calc_vars": {"interval": 10, "base_damage": 60, "level_scaling": 7}
+    },
+    "ARAM_Immovable": {
+      "name": "纹丝不动",
+      "tier": "silver",
+      "description": "获得20%韧性；每有1名敌方英雄在附近，额外获得10护甲和10魔抗",
+      "effects": [
+        {"type": "flat_stat", "stat": "tenacity", "value": 0.20},
+        {"type": "defense_boost", "subtype": "per_nearby_enemy", "armor_per_enemy": 10, "mr_per_enemy": 10}
+      ],
+      "ability_affinity": ["defense"],
+      "champion_affinity": ["tank", "vanguard", "juggernaut"],
+      "calc_vars": {"tenacity": 0.20, "armor_per_enemy": 10, "mr_per_enemy": 10}
+    },
+    "ARAM_BreadAndButter": {
+      "name": "面包和黄油",
+      "tier": "gold",
+      "description": "Q技能冷却降低2秒；Q技能伤害提升15%",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "specific_skill", "target": "q", "value": 2},
+        {"type": "damage_amp", "subtype": "specific_skill", "target": "q", "percent": 0.15}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"q_cdr": 2, "q_damage_amp": 0.15}
+    },
+    "ARAM_BreadAndCheese": {
+      "name": "面包和奶酪",
+      "tier": "gold",
+      "description": "W技能冷却降低2秒；W技能伤害提升15%",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "specific_skill", "target": "w", "value": 2},
+        {"type": "damage_amp", "subtype": "specific_skill", "target": "w", "percent": 0.15}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"w_cdr": 2, "w_damage_amp": 0.15}
+    },
+    "ARAM_PerfectTiming": {
+      "name": "一板一眼",
+      "tier": "gold",
+      "description": "E技能冷却降低2秒；E技能伤害提升15%",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "specific_skill", "target": "e", "value": 2},
+        {"type": "damage_amp", "subtype": "specific_skill", "target": "e", "percent": 0.15}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"e_cdr": 2, "e_damage_amp": 0.15}
+    },
+    "ARAM_WithHaste": {
+      "name": "快步",
+      "tier": "gold",
+      "description": "+20技能急速；技能命中后获得30%移速持续2秒",
+      "effects": [
+        {"type": "flat_stat", "stat": "ability_haste", "value": 20},
+        {"type": "flat_stat", "stat": "move_speed", "value": 0.30, "condition": "after_skill_hit", "duration": 2}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"haste_bonus": 20, "ms_on_hit": 0.30, "ms_duration": 2}
+    },
+    "ARAM_Blinding": {
+      "name": "闪光弹",
+      "tier": "silver",
+      "description": "你的技能命中时使敌人致盲1秒(普攻无法命中)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "blind_on_hit", "duration": 1}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"blind_duration": 1}
+    },
+    "ARAM_SnowballFight": {
+      "name": "雪球大战！",
+      "tier": "silver",
+      "description": "极地雪橇(召唤师技能)的冷却降低50%；雪橇命中后提供40%攻速持续5秒",
+      "effects": [
+        {"type": "summoner_spell", "subtype": "snowball_cdr", "value": 0.50},
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.40, "condition": "snowball_hit", "duration": 5}
+      ],
+      "ability_affinity": ["auto_attack"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"summoner_cdr": 0.50, "as_on_hit": 0.40, "as_duration": 5}
+    },
+    "ARAM_SnowballGacha": {
+      "name": "雪球扭蛋机",
+      "tier": "gold",
+      "description": "每10秒获得一层雪球充能(最多5层)；每层雪球使下一次技能伤害提升8%",
+      "effects": [
+        {"type": "special_effect", "subtype": "snowball_stack", "interval": 10, "max_stacks": 5},
+        {"type": "damage_amp", "subtype": "per_snowball_stack", "percent_per_stack": 0.08}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["mage", "assassin", "marksman"],
+      "calc_vars": {"stack_interval": 10, "max_stacks": 5, "dmg_per_stack": 0.08}
+    },
+    "ARAM_ImCooking": {
+      "name": "火上浇油",
+      "tier": "gold",
+      "description": "燃烧/持续伤害效果提升40%；对已受持续伤害的敌人额外造成8%最大生命值伤害",
+      "effects": [
+        {"type": "damage_amp", "subtype": "burn_dot", "percent": 0.40},
+        {"type": "attack_modifier", "subtype": "max_hp_damage_on_burning", "percent": 0.08}
+      ],
+      "ability_affinity": ["damage_ap", "damage_ad", "special_effect"],
+      "champion_affinity": ["mage", "battlemage"],
+      "calc_vars": {"dot_amp": 0.40, "max_hp_bonus": 0.08}
+    },
+    "ARAM_SoulSiphon": {
+      "name": "灵魂虹吸",
+      "tier": "gold",
+      "description": "技能命中英雄时恢复25(+5%已损失生命值)生命值；对同一目标有3秒冷却",
+      "effects": [
+        {"type": "heal_shield_boost", "subtype": "on_hit_vamp", "base": 25, "missing_hp_ratio": 0.05}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["fighter", "assassin", "battlemage"],
+      "calc_vars": {"heal_base": 25, "missing_hp_ratio": 0.05, "icd": 3}
+    },
+    "ARAM_Illusionary": {
+      "name": "虚幻武器",
+      "tier": "gold",
+      "description": "造成伤害时创造一个幻像攻击目标，幻像造成30%伤害持续3秒",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "create_illusion", "damage_percent": 0.30, "duration": 3}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["marksman", "assassin"],
+      "calc_vars": {"illusion_damage": 0.30, "duration": 3}
+    },
+    "ARAM_Scissors": {
+      "name": "穿针引线",
+      "tier": "gold",
+      "description": "暴击几率提升25%；暴击时获得30%攻速持续4秒",
+      "effects": [
+        {"type": "flat_stat", "stat": "crit_chance", "value": 0.25},
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.30, "condition": "on_crit", "duration": 4}
+      ],
+      "ability_affinity": ["auto_attack"],
+      "champion_affinity": ["marksman"],
+      "calc_vars": {"crit_bonus": 0.25, "as_on_crit": 0.30, "as_duration": 4}
+    },
+    "ARAM_Cycling": {
+      "name": "循环往复",
+      "tier": "gold",
+      "description": "使用Q/W/E中的一个技能后，其他两个技能冷却减少1秒",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "on_skill_cast", "target": "other_basic_skills", "value": 1}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["mage", "fighter", "assassin"],
+      "calc_vars": {"cdr_on_cast": 1}
+    },
+    "ARAM_DevilDance": {
+      "name": "魔鬼之舞",
+      "tier": "gold",
+      "description": "移动时积累舞步(每100码1层,最多20层)；下次技能消耗所有层数每层+3%伤害",
+      "effects": [
+        {"type": "damage_amp", "subtype": "movement_stacks", "max_stacks": 20, "percent_per_stack": 0.03}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["skirmisher", "assassin", "marksman"],
+      "calc_vars": {"max_stacks": 20, "dmg_per_stack": 0.03}
+    },
+    "ARAM_Dunking": {
+      "name": "终极转盘",
+      "tier": "prismatic",
+      "description": "施放大招时随机获得一个额外效果(冰冻/眩晕/致盲/减速/强化中之一)",
+      "effects": [
+        {"type": "ultimate_boost", "subtype": "random_effect_on_ult"}
+      ],
+      "ability_affinity": ["ultimate"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"ult_bonus_effects": ["freeze", "stun", "blind", "slow", "empower"]}
+    },
+    "ARAM_SelfDestruct": {
+      "name": "自我毁灭",
+      "tier": "silver",
+      "description": "死亡时对周围敌人造成200(+50%额外攻击力)(+40%法术强度)魔法伤害",
+      "effects": [
+        {"type": "special_effect", "subtype": "death_explosion", "base": 200, "bonus_ad_ratio": 0.50, "ap_ratio": 0.40}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"explosion_base": 200, "bonus_ad_ratio": 0.50, "ap_ratio": 0.40}
+    },
+    "ARAM_SharkInfested": {
+      "name": "鲨鱼暴风",
+      "tier": "gold",
+      "description": "对英雄造成伤害时召唤鲨鱼撕咬目标，造成30(+10%额外攻击力)(+8%法术强度)物理伤害(冷却5秒)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "summon_shark", "base": 30, "bonus_ad_ratio": 0.10, "ap_ratio": 0.08}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"shark_base": 30, "bonus_ad_ratio": 0.10, "ap_ratio": 0.08, "icd": 5}
+    },
+    "ARAM_OverlyExcited": {
+      "name": "兴奋过度",
+      "tier": "silver",
+      "description": "击杀或助攻后，接下来5秒内技能急速+40",
+      "effects": [
+        {"type": "flat_stat", "stat": "ability_haste", "value": 40, "condition": "after_takedown", "duration": 5}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["assassin", "fighter", "mage"],
+      "calc_vars": {"haste_on_kill": 40, "duration": 5}
+    },
+    "ARAM_ShrinkRay": {
+      "name": "缩小射线",
+      "tier": "gold",
+      "description": "攻击或技能命中敌人时使其体型缩小20%并降低15%伤害输出，持续3秒",
+      "effects": [
+        {"type": "defense_boost", "subtype": "debuff_enemy", "size_reduce": 0.20, "damage_reduce": 0.15, "duration": 3}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"size_reduce": 0.20, "dmg_reduce": 0.15, "duration": 3}
+    },
+    "ARAM_BoneArmor": {
+      "name": "堕落圣盾",
+      "tier": "silver",
+      "description": "每15秒获得一层护盾(40+15×等级)，受到英雄伤害时刷新",
+      "effects": [
+        {"type": "defense_boost", "subtype": "periodic_shield", "interval": 15, "base": 40, "per_level": 15}
+      ],
+      "ability_affinity": ["defense"],
+      "champion_affinity": ["tank", "fighter", "vanguard"],
+      "calc_vars": {"shield_interval": 15, "shield_base": 40, "shield_per_level": 15}
+    },
+    "ARAM_DualWield": {
+      "name": "双刀流",
+      "tier": "prismatic",
+      "description": "普攻变为双持武器：每次攻击造成两次60%攻击力的伤害；攻击速度+30%",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "dual_wield", "hit_count": 2, "damage_per_hit": 0.60},
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.30}
+      ],
+      "ability_affinity": ["auto_attack"],
+      "champion_affinity": ["marksman", "fighter", "assassin"],
+      "calc_vars": {"hits": 2, "dmg_per_hit": 0.60, "as_bonus": 0.30}
+    },
+    "ARAM_DancingBlades": {
+      "name": "回旋刃",
+      "tier": "silver",
+      "description": "普攻和技能命中时发射回旋刃，对路径上的敌人造成15(+10%额外攻击力)物理伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "ricochet_blade", "base": 15, "bonus_ad_ratio": 0.10}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["marksman", "fighter"],
+      "calc_vars": {"blade_base": 15, "bonus_ad_ratio": 0.10}
+    },
+    "ARAM_EscapingPlan": {
+      "name": "逃跑计划",
+      "tier": "silver",
+      "description": "受到伤害后获得40%移速持续2秒(冷却10秒)；血量低于30%时翻倍",
+      "effects": [
+        {"type": "mobility_boost", "subtype": "damaged_ms", "ms_percent": 0.40, "duration": 2, "icd": 10, "low_hp_multiplier": 2}
+      ],
+      "ability_affinity": ["mobility"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"ms_on_damage": 0.40, "duration": 2, "icd": 10, "low_hp_mult": 2}
+    },
+    "ARAM_Exhausting": {
+      "name": "退敌力场",
+      "tier": "silver",
+      "description": "附近敌人移速降低15%；对近身的敌人施加40%减速持续1秒",
+      "effects": [
+        {"type": "defense_boost", "subtype": "slow_aura", "aura_slow": 0.15, "melee_slow": 0.40, "melee_slow_duration": 1}
+      ],
+      "ability_affinity": ["defense"],
+      "champion_affinity": ["tank", "vanguard", "juggernaut"],
+      "calc_vars": {"aura_slow": 0.15, "melee_slow": 0.40, "melee_duration": 1}
+    },
+    "ARAM_GlassCannon": {
+      "name": "玻璃大炮",
+      "tier": "gold",
+      "description": "+25%所有伤害输出；-20%最大生命值",
+      "effects": [
+        {"type": "damage_amp", "subtype": "all_damage", "percent": 0.25},
+        {"type": "percent_stat", "stat": "hp", "value": -0.20}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["marksman", "mage", "assassin"],
+      "calc_vars": {"damage_amp": 0.25, "hp_penalty": -0.20}
+    },
+    "ARAM_JuiceBox": {
+      "name": "果汁盒",
+      "tier": "silver",
+      "description": "击杀小兵或野怪掉落果汁，拾取恢复8%已损失生命值和法力值",
+      "effects": [
+        {"type": "heal_shield_boost", "subtype": "pickup_heal", "missing_hp_ratio": 0.08, "missing_mana_ratio": 0.08}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"heal_ratio": 0.08, "mana_ratio": 0.08}
+    },
+    "ARAM_FlameBreath": {
+      "name": "圣火",
+      "tier": "gold",
+      "description": "技能命中时对目标及周围敌人造成30(+20%额外攻击力)(+15%法术强度)魔法伤害(冷却3秒)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "aoe_on_hit", "base": 30, "bonus_ad_ratio": 0.20, "ap_ratio": 0.15, "icd": 3}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["mage", "fighter", "battlemage"],
+      "calc_vars": {"aoe_base": 30, "bonus_ad_ratio": 0.20, "ap_ratio": 0.15, "icd": 3}
+    },
+    "ARAM_VoidRift": {
+      "name": "虚空裂隙",
+      "tier": "prismatic",
+      "description": "每8秒，下一次攻击或技能在目标位置打开虚空裂隙，3秒后爆炸造成200(+30%额外攻击力)(+25%法术强度)真实伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "void_rift", "interval": 8, "base": 200, "bonus_ad_ratio": 0.30, "ap_ratio": 0.25, "damage_type": "true"}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"rift_interval": 8, "base": 200, "bonus_ad_ratio": 0.30, "ap_ratio": 0.25}
+    },
+    "ARAM_ChainReaction": {
+      "name": "连锁反应",
+      "tier": "prismatic",
+      "description": "攻击或技能命中后弹射至附近2个敌人，造成40%伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "bounce", "bounce_count": 2, "bounce_damage_percent": 0.40}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "auto_attack"],
+      "champion_affinity": ["marksman", "mage"],
+      "calc_vars": {"bounces": 2, "bounce_dmg": 0.40}
+    },
+    "ARAM_Heavyweight": {
+      "name": "重量级打击手",
+      "tier": "silver",
+      "description": "每下普攻和技能附带2%目标当前生命值的额外物理伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "current_hp_damage", "percent": 0.02}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["fighter", "marksman", "tank"],
+      "calc_vars": {"current_hp_pct": 0.02}
+    },
+    "ARAM_JinxThree": {
+      "name": "金克丝三连炸",
+      "tier": "prismatic",
+      "description": "攻击造成伤害后，目标脚下埋雷，1.5秒后爆炸造成80(+20%额外攻击力)(+15%法术强度)范围物理伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "mine_on_hit", "delay": 1.5, "base": 80, "bonus_ad_ratio": 0.20, "ap_ratio": 0.15}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["marksman"],
+      "calc_vars": {"mine_delay": 1.5, "base": 80, "bonus_ad_ratio": 0.20, "ap_ratio": 0.15}
+    },
+    "ARAM_QuantumComputing": {
+      "name": "量子计算",
+      "tier": "prismatic",
+      "description": "你的技能急速翻倍；但冷却缩减的上限提升至80%",
+      "effects": [
+        {"type": "cooldown_reduction", "subtype": "double_haste", "value": 2.0, "cdr_cap": 80}
+      ],
+      "ability_affinity": ["all"],
+      "champion_affinity": ["mage", "assassin"],
+      "calc_vars": {"haste_mult": 2.0, "cdr_cap_pct": 80}
+    },
+    "ARAM_TentacleSlam": {
+      "name": "触手重击",
+      "tier": "silver",
+      "description": "技能命中时在目标位置召唤一条触手拍击，造成50(+30%额外攻击力)(+20%法术强度)物理伤害(冷却4秒)",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "summon_tentacle", "base": 50, "bonus_ad_ratio": 0.30, "ap_ratio": 0.20, "icd": 4}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["fighter", "mage", "tank"],
+      "calc_vars": {"tentacle_base": 50, "bonus_ad_ratio": 0.30, "ap_ratio": 0.20, "icd": 4}
+    },
+    "ARAM_ArcaneFist": {
+      "name": "秘术冲拳",
+      "tier": "prismatic",
+      "description": "普攻和技能获得额外75攻击距离；每击中一个敌人获得5%技能急速持续5秒",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_range", "value": 75},
+        {"type": "flat_stat", "stat": "ability_haste", "value": 5, "condition": "on_hit", "duration": 5, "stacking": true}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad", "damage_ap"],
+      "champion_affinity": ["fighter", "marksman", "assassin"],
+      "calc_vars": {"range_bonus": 75, "haste_per_hit": 5, "haste_duration": 5, "haste_stacking": true}
+    },
+    "ARAM_WindSpeakers": {
+      "name": "风语者的祝福",
+      "tier": "prismatic",
+      "description": "治疗和护盾效果提升50%；对友军施放时额外提供20%减伤持续3秒",
+      "effects": [
+        {"type": "heal_shield_boost", "subtype": "self", "value": 0.50},
+        {"type": "heal_shield_boost", "subtype": "ally_damage_reduce", "value": 0.20, "duration": 3}
+      ],
+      "ability_affinity": ["heal_shield"],
+      "champion_affinity": ["support", "enchanter"],
+      "calc_vars": {"heal_boost": 0.50, "ally_dmg_reduce": 0.20, "reduce_duration": 3}
+    },
+    "ARAM_MagicSoul": {
+      "name": "精怪魔法",
+      "tier": "prismatic",
+      "description": "施放技能后，下一个技能法力消耗降至0；若技能有冷却则减少3秒冷却(每个技能独立冷却10秒)",
+      "effects": [
+        {"type": "special_effect", "subtype": "free_next_skill", "mana_cost_reduce": 1.0, "cdr_reduce": 3, "icd": 10}
+      ],
+      "ability_affinity": ["damage_ap"],
+      "champion_affinity": ["mage", "battlemage"],
+      "calc_vars": {"mana_free": true, "cdr_on_next": 3, "icd": 10}
+    },
+    "ARAM_EyeOfTheStorm": {
+      "name": "风暴护手",
+      "tier": "prismatic",
+      "description": "+25%攻击速度；每3次攻击释放一道闪电链造成80(+20%法术强度)魔法伤害",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_speed", "value": 0.25},
+        {"type": "attack_modifier", "subtype": "lightning_chain", "interval_hits": 3, "base": 80, "ap_ratio": 0.20}
+      ],
+      "ability_affinity": ["auto_attack"],
+      "champion_affinity": ["marksman", "fighter"],
+      "calc_vars": {"as_bonus": 0.25, "chain_hits": 3, "chain_base": 80, "chain_ap_ratio": 0.20}
+    },
+    "ARAM_BaronHand": {
+      "name": "男爵之手",
+      "tier": "prismatic",
+      "description": "击杀或助攻后获得一层男爵之力(最多5层)；每层提供15攻击力、15法术强度、5%技能急速",
+      "effects": [
+        {"type": "flat_stat", "stat": "attack_damage", "value": 15, "condition": "per_takedown_stack", "max_stacks": 5},
+        {"type": "flat_stat", "stat": "ap", "value": 15, "condition": "per_takedown_stack", "max_stacks": 5},
+        {"type": "flat_stat", "stat": "ability_haste", "value": 5, "condition": "per_takedown_stack", "max_stacks": 5}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap"],
+      "champion_affinity": ["all"],
+      "calc_vars": {"ad_per_stack": 15, "ap_per_stack": 15, "haste_per_stack": 5, "max_stacks": 5}
+    },
+    "ARAM_Witchcraft": {
+      "name": "加速巫术",
+      "tier": "prismatic",
+      "description": "移动时积攒巫术能量(最多100层)；下次技能消耗所有层数，每层增加1.5%伤害和2%移速持续3秒",
+      "effects": [
+        {"type": "damage_amp", "subtype": "mobility_stacks", "max_stacks": 100, "dmg_per_stack": 0.015},
+        {"type": "flat_stat", "stat": "move_speed", "value": 0.02, "condition": "per_stack_consumed", "duration": 3, "max_stacks": 100}
+      ],
+      "ability_affinity": ["damage_ad", "damage_ap", "mobility"],
+      "champion_affinity": ["mage", "assassin", "skirmisher"],
+      "calc_vars": {"max_stacks": 100, "dmg_per_stack": 0.015, "ms_per_stack": 0.02, "ms_duration": 3}
+    },
+    "ARAM_HeartOfGold": {
+      "name": "黄金之心",
+      "tier": "silver",
+      "description": "每10秒获得5金币；击杀英雄额外获得50金币",
+      "effects": [
+        {"type": "special_effect", "subtype": "passive_gold", "per_10s": 5},
+        {"type": "special_effect", "subtype": "kill_bonus_gold", "value": 50}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"gold_per_10s": 5, "kill_bonus": 50}
+    },
+    "ARAM_Poroking": {
+      "name": "魄罗爆破手",
+      "tier": "gold",
+      "description": "极地雪橇命中后额外造成150(+20%法术强度)魔法伤害并击飞目标1秒",
+      "effects": [
+        {"type": "summoner_spell", "subtype": "snowball_enhance", "base": 150, "ap_ratio": 0.20, "cc": "knockup", "cc_duration": 1}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"bonus_base": 150, "ap_ratio": 0.20, "cc_duration": 1}
+    },
+    "ARAM_SnowballKingBounce": {
+      "name": "魄罗之王的弹跳",
+      "tier": "prismatic",
+      "description": "极地雪橇变为最多弹跳3次；每次弹跳造成100(+15%法术强度)魔法伤害",
+      "effects": [
+        {"type": "summoner_spell", "subtype": "snowball_bounce", "bounces": 3, "base_per_bounce": 100, "ap_ratio": 0.15}
+      ],
+      "ability_affinity": [],
+      "champion_affinity": ["all"],
+      "calc_vars": {"bounces": 3, "dmg_per_bounce": 100, "ap_ratio": 0.15}
+    },
+    "ARAM_DancingBladesGold": {
+      "name": "四重回旋刃",
+      "tier": "prismatic",
+      "description": "攻击和技能发射4把回旋刃，每把造成30(+12%额外攻击力)物理伤害",
+      "effects": [
+        {"type": "attack_modifier", "subtype": "multi_blade", "blade_count": 4, "base_per_blade": 30, "bonus_ad_ratio": 0.12}
+      ],
+      "ability_affinity": ["auto_attack", "damage_ad"],
+      "champion_affinity": ["marksman", "fighter"],
+      "calc_vars": {"blades": 4, "base_per_blade": 30, "bonus_ad_ratio": 0.12}
+    }
+  }
+}

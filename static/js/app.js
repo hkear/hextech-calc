@@ -36,9 +36,10 @@ const App = {
   async loadVersion() {
     try {
       const d = await this.fetchJSON('/api/version');
-      const vText = `v${d.engine_version} | 英雄${d.champion_count} | 增幅${d.augment_count}(${d.augment_curated}手工+${d.augment_inferred}推理) | ${d.ddragon_version}`;
+      const gameVer = d.game_version || d.ddragon_version;
+      const vText = `v${d.engine_version} | 英雄${d.champion_count} | 增幅${d.augment_count}(${d.augment_curated}手工+${d.augment_inferred}推理) | ${gameVer}`;
       document.getElementById('versionBadge').textContent = vText;
-      document.getElementById('footerVersion').textContent = `${d.ddragon_version} | 增幅DB: ${d.augment_db_version}`;
+      document.getElementById('footerVersion').textContent = `${gameVer} | 增幅DB: ${d.augment_db_version}`;
       document.getElementById('footerChamps').textContent = d.champion_count || '-';
       document.getElementById('footerAugments').textContent = `${d.augment_count} (${d.augment_curated}手工/${d.augment_inferred}推理)`;
     } catch(e) {

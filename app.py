@@ -227,8 +227,18 @@ def api_version():
         curated = meta.get('curated_count', 0)
         inferred = meta.get('inferred_count', 0)
         tiers = meta.get('tier_distribution', {})
+    # 获取游戏版本（从 extra 字段）
+    game_version = get_version()
+    if vi and vi.get('extra'):
+        try:
+            extra = json.loads(vi['extra']) if isinstance(vi['extra'], str) else vi['extra']
+            if extra.get('game_version'):
+                game_version = extra['game_version']
+        except:
+            pass
     return jsonify({
         'ddragon_version': get_version(),
+        'game_version': game_version,
         'engine_version': db_version,
         'champion_count': champ_count,
         'augment_count': augment_total,

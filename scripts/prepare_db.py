@@ -180,6 +180,7 @@ def save_meta_info(champ_count, aug_count, curated, inferred):
         with open(VERSION_FILE, 'r', encoding='utf-8') as f:
             vi = json.load(f)
         ddragon_version = vi.get('ddragon_version', '')
+        game_version = vi.get('game_version', '')
 
     save_version_info(
         ddragon_version=ddragon_version,
@@ -189,6 +190,7 @@ def save_meta_info(champ_count, aug_count, curated, inferred):
         inferred_count=inferred,
         extra={
             'engine_version': '2.0.0',
+            'game_version': game_version,
             'prepared_at': time.strftime("%Y-%m-%d %H:%M:%S"),
         }
     )

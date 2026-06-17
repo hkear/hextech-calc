@@ -1,5 +1,9 @@
 {
   "ddragon_version": "16.12.1",
-  "last_updated": "2026-06-16 22:14:52",
-  "champion_count": 172
+  "game_version": "16.12.786.9700",
+  "last_updated": "2026-06-17 19:37:00",
+  "champion_count": 172,
+  "augment_count": 637,
+  "curated_count": 112,
+  "inferred_count": 525
 }
